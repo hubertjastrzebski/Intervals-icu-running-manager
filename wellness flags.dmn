@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="definitions_1c759np" name="definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.52.0">
+  <decision id="decision_17yi45g" name="Flag negative wellness markers">
+    <decisionTable id="decisionTable_07m8p99" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="input1" label="TSB" biodi:width="192">
+        <inputExpression id="inputExpression1" typeRef="number">
+          <text>CTLy*41/42-ATLy*6/7</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_054wk2b" label="HRV vs baseline">
+        <inputExpression id="LiteralExpression_0pyc1cs" typeRef="number">
+          <text>HRV(7d)/HRV(60d)</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ovcz0i" label="Sleep Score vs baseline" biodi:width="192">
+        <inputExpression id="LiteralExpression_1hqxkjf" typeRef="number">
+          <text>Sleep(1d)/Sleep(60d)</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_19yfsrb" label="RHR vs baseline">
+        <inputExpression id="LiteralExpression_0vsvd7e" typeRef="number">
+          <text>RHR(1d)/RHR(60d)</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1kbvvvf" label="Sleep Time vs baseline">
+        <inputExpression id="LiteralExpression_1vomk6y" typeRef="number">
+          <text>SleepT/SleepT(60d)</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="Welness Flags" name="flags" typeRef="number" biodi:width="192" />
+      <rule id="DecisionRule_1y124by">
+        <inputEntry id="UnaryTests_0sgev8w">
+          <text>&lt;-30</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_019tr56">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gfp2e5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1rbjyfa">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0030g7s">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0pk2wbw">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0vp6b4i">
+        <inputEntry id="UnaryTests_00kfksr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nze52h">
+          <text>&lt;0.93</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0xev5rk">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_18qrflf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0748hcm">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1hsp1jc">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_01m232l">
+        <inputEntry id="UnaryTests_0ky0d5b">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0wrl48g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0p9c4fy">
+          <text>&lt;0.85</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_193bbnr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1xj7ul8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0nh67za">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_18sujvn">
+        <inputEntry id="UnaryTests_17bprdx">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1wrxaxw">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08gjyk5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qzshhp">
+          <text>&gt;1.15</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07hgeju">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ee74v0">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0d3eegp">
+        <inputEntry id="UnaryTests_1n7b9uv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13jwavf">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bcb60z">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03zmlx5">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1nojim8">
+          <text>&lt;0.85</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_13oo9sj">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

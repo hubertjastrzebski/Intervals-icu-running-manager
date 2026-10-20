@@ -1,0 +1,3055 @@
+{
+    "name": "Intervals ICU running manager ",
+    "flow": [
+        {
+            "id": 1,
+            "module": "http:MakeRequest",
+            "version": 4,
+            "parameters": {
+                "tlsType": "",
+                "basicAuthKeychain": 261451,
+                "authenticationType": "basicAuth"
+            },
+            "mapper": {
+                "url": "https://intervals.icu/api/v1/athlete/0/events",
+                "method": "get",
+                "timeout": "40",
+                "shareCookies": false,
+                "parseResponse": true,
+                "allowRedirects": true,
+                "queryParameters": [
+                    {
+                        "name": "oldest",
+                        "value": "{{formatDate(now; \"YYYY-MM-DD\"; \"Europe/Warsaw\")}}"
+                    },
+                    {
+                        "name": "newest",
+                        "value": "{{formatDate(addDays(now; 7); \"YYYY-MM-DD\"; \"Europe/Warsaw\")}}"
+                    }
+                ],
+                "stopOnHttpError": true,
+                "requestCompressedContent": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0,
+                    "name": "Read intervals.icu calendar"
+                },
+                "restore": {
+                    "expect": {
+                        "method": {
+                            "mode": "chose",
+                            "label": "GET"
+                        },
+                        "headers": {
+                            "mode": "chose"
+                        },
+                        "contentType": {
+                            "label": "Empty"
+                        },
+                        "shareCookies": {
+                            "mode": "chose"
+                        },
+                        "parseResponse": {
+                            "mode": "chose"
+                        },
+                        "allowRedirects": {
+                            "mode": "chose"
+                        },
+                        "paginationType": {
+                            "label": "Empty"
+                        },
+                        "queryParameters": {
+                            "mode": "chose",
+                            "items": [
+                                null,
+                                null
+                            ]
+                        },
+                        "stopOnHttpError": {
+                            "mode": "chose"
+                        },
+                        "requestCompressedContent": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "tlsType": {
+                            "label": "Empty"
+                        },
+                        "basicAuthKeychain": {
+                            "label": "Hubert's HTTP Basic Auth key"
+                        },
+                        "authenticationType": {
+                            "label": "Basic authUse when the service requires a username and password."
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "authenticationType",
+                        "type": "select",
+                        "label": "Authentication type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "noAuth",
+                                "apiKey",
+                                "basicAuth",
+                                "oAuth"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tlsType",
+                        "type": "select",
+                        "label": "Transport layer security (TLS)",
+                        "validate": {
+                            "enum": [
+                                "mTls",
+                                "tls"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "proxyKeychain",
+                        "type": "keychain:proxy",
+                        "label": "Proxy"
+                    },
+                    {
+                        "name": "basicAuthKeychain",
+                        "type": "keychain:basicauth",
+                        "label": "Credentials",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "get",
+                                "head",
+                                "post",
+                                "put",
+                                "patch",
+                                "delete",
+                                "options"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Name",
+                                    "required": true,
+                                    "validate": {
+                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                    }
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Value"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Header"
+                        },
+                        "type": "array",
+                        "label": "Headers"
+                    },
+                    {
+                        "name": "queryParameters",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Name",
+                                    "required": true
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Value"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Parameter"
+                        },
+                        "type": "array",
+                        "label": "Query parameters"
+                    },
+                    {
+                        "name": "contentType",
+                        "type": "select",
+                        "label": "Body content type",
+                        "validate": {
+                            "enum": [
+                                "json",
+                                "multipart",
+                                "urlEncoded",
+                                "custom"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseResponse",
+                        "type": "boolean",
+                        "label": "Parse response",
+                        "required": true
+                    },
+                    {
+                        "name": "stopOnHttpError",
+                        "type": "boolean",
+                        "label": "Return error if HTTP request fails",
+                        "required": true
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "uinteger",
+                        "label": "Timeout",
+                        "validate": {
+                            "max": 300,
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "allowRedirects",
+                        "type": "boolean",
+                        "label": "Allow redirects",
+                        "required": true
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    },
+                    {
+                        "name": "requestCompressedContent",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    },
+                    {
+                        "name": "paginationType",
+                        "type": "select",
+                        "label": "Pagination type",
+                        "validate": {
+                            "enum": [
+                                "offsetBased",
+                                "pageBased",
+                                "urlBased",
+                                "tokenBased"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "data",
+                        "type": "any",
+                        "label": "Data"
+                    },
+                    {
+                        "name": "statusCode",
+                        "type": "number",
+                        "label": "Status Code"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "content-length",
+                                "type": "text",
+                                "label": "Content-Length"
+                            },
+                            {
+                                "name": "content-encoding",
+                                "type": "text",
+                                "label": "Content-Encoding"
+                            },
+                            {
+                                "name": "content-type",
+                                "type": "text",
+                                "label": "Content-Type"
+                            },
+                            {
+                                "name": "server",
+                                "type": "text",
+                                "label": "Server"
+                            },
+                            {
+                                "name": "cache-control",
+                                "type": "text",
+                                "label": "Cache-Control"
+                            },
+                            {
+                                "name": "set-cookie",
+                                "spec": {
+                                    "type": "text"
+                                },
+                                "type": "array",
+                                "label": "Set-Cookie"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Headers"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 3,
+                            "module": "builtin:BasicFeeder",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "array": "{{1.data}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": -150,
+                                    "name": "Iterate workouts - convert"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "array": {
+                                            "mode": "edit"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "mode": "edit",
+                                        "name": "array",
+                                        "spec": [],
+                                        "type": "array",
+                                        "label": "Array"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "module": "anthropic-claude:simpleTextPrompt",
+                            "version": 1,
+                            "parameters": {},
+                            "filter": {
+                                "name": "unstructured run",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{3.category}}",
+                                            "b": "WORKOUT",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{3.type}}",
+                                            "b": "Run",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{3.workout_doc.steps}}",
+                                            "b": "0",
+                                            "o": "array:equal"
+                                        },
+                                        {
+                                            "a": "{{contains(map(1.data; \"external_id\"); 3.uid)}}",
+                                            "b": "{{false}}",
+                                            "o": "boolean:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "model": "claude-haiku-5-5",
+                                "max_tokens": "1000",
+                                "textPrompt": "Convert this running workout description into intervals.icu workout text.\r\n\r\nRules:\r\n\r\n- One step per line: \"- \", then a duration, then a target. Example: - 35m Z3 Pace\r\n- Durations: s = seconds, m = minutes, h = hours. Distances in metres use mtr, e.g. 400mtr.\r\n- Targets are pace zones or percentages only, using the table below. A range is written Z2-Z3 Pace or 60-77% Pace.\r\n- Repeats: a line \"Nx\" before the repeated steps, N denotes number of repeats, with one empty line before and after the block. No nested repeats.\r\n- If the description has vague walking breaks as optional, leave them out.\r\n- If you need to think, do it inside NOTES_START NOTES_END.\r\n- Then write WORKOUT_START on its own line, the final workout exactly once, and WORKOUT_END on its own line. Nothing after WORKOUT_END.\n- If the description can't be converted, write WORKOUT_START, then UNPARSEABLE, then WORKOUT_END.\r\n\r\nIntensity key (TrainerRoad RPE → target):\r\n- RPE 2 / very very easy / recovery: 60-77% Pace\r\n- RPE 3 / very easy / endurance: 77-83% Pace\r\n- RPE 4 / easy / endurance: 83-88% Pace\r\n- RPE 5 / comfortable / marathon: 88-93% Pace\r\n- RPE 6 / comfortably hard / half marathon: 93-97% Pace\r\n- RPE 7 / hard / 10k: 97-100% Pace\r\n- RPE 8 / very hard / 5k: Z5 Pace\r\n- RPE 9 / very very hard / mile: Z6 Pace\r\n- RPE 10 / maximal / sprints: Z7 Pace\r\n\r\n- A recovery inside a repeat with no RPE given (e.g. \"5min easy\" after an interval): Z2\r\n- A step with an effort word but no RPE number: match the word to the key above.\r\n\r\nExample:\r\n\"Description: 10min Easy RPE4 (Endurance) pace to warm up\r\n\r\n6x3min Very Hard RPE8 (5k) pace, 3min easy\r\n\r\n9min Easy RPE4 (Endurance) pace to cool down\"\r\n\r\nOutput:\r\nWORKOUT_START\r\n- 10m 83-88% Pace\r\n\r\n6x\r\n- 3m Z5 Pace\r\n- 3m Z2 Pace\n\r\n- 9m 83-88% Pace\n\r\nWORKOUT_END\n\nNow convert this workout:\r\nWorkout name: {{3.name}}\r\nDescription: {{3.description}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 912,
+                                    "y": -153
+                                },
+                                "setupValidation": {
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    },
+                                    "version": 1,
+                                    "configuration": "c145a9aa3942b39"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "model": {
+                                            "label": "Claude Haiku 5.5The fastest option for high-volume classification, extraction, and routing"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "Model",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "claude-haiku-5-5",
+                                                "claude-haiku-4-5",
+                                                "claude-sonnet-5-5",
+                                                "claude-opus-5-5",
+                                                "claude-fable-5-1",
+                                                "claude-opus-5",
+                                                "claude-fable-5",
+                                                "claude-sonnet-5",
+                                                "claude-opus-4-8",
+                                                "claude-opus-4-7",
+                                                "claude-sonnet-4-6",
+                                                "claude-opus-4-6",
+                                                "claude-sonnet-4-5",
+                                                "claude-opus-4-5"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "textPrompt",
+                                        "type": "text",
+                                        "label": "Text Prompt",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "max_tokens",
+                                        "type": "uinteger",
+                                        "label": "Max Tokens",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "module": "util:SetVariables",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "variables": [
+                                    {
+                                        "name": "workout_text",
+                                        "value": "{{trim(first(split(last(split(14.result; \"WORKOUT_START\")); \"WORKOUT_END\")))}}"
+                                    }
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1218,
+                                    "y": -156,
+                                    "name": "Extract workout text"
+                                },
+                                "setupValidation": {
+                                    "version": 1,
+                                    "configuration": "f2dbc3046a4c03a9",
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    }
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "variables": {
+                                            "items": [
+                                                null
+                                            ]
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "variables",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Variable name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "any",
+                                                    "label": "Variable value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Variable"
+                                        },
+                                        "type": "array",
+                                        "label": "Variables",
+                                        "validate": {
+                                            "unique": {
+                                                "by": "name"
+                                            },
+                                            "minItems": 1
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "workout_text",
+                                        "type": "any",
+                                        "label": "workout_text"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "module": "http:MakeRequest",
+                            "version": 4,
+                            "parameters": {
+                                "tlsType": "",
+                                "basicAuthKeychain": 261451,
+                                "authenticationType": "basicAuth"
+                            },
+                            "filter": {
+                                "name": "convertible",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{15.workout_text}}",
+                                            "o": "exist"
+                                        },
+                                        {
+                                            "a": "{{15.workout_text}}",
+                                            "b": "UNPARSEABLE",
+                                            "o": "text:notcontain"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "url": "https://intervals.icu/api/v1/athlete/0/events",
+                                "method": "post",
+                                "timeout": "40",
+                                "contentType": "json",
+                                "inputMethod": "dataStructure",
+                                "shareCookies": false,
+                                "parseResponse": true,
+                                "allowRedirects": true,
+                                "stopOnHttpError": true,
+                                "bodyDataStructure": 631372,
+                                "dataStructureBodyContent": {
+                                    "name": "[S]{{3.name}}",
+                                    "type": "{{3.type}}",
+                                    "category": "{{3.category}}",
+                                    "description": "{{15.workout_text}} {{newline}}{{newline}} {{3.description}}",
+                                    "external_id": "{{3.uid}}",
+                                    "start_date_local": "{{3.start_date_local}}"
+                                },
+                                "requestCompressedContent": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1511,
+                                    "y": -157,
+                                    "name": "Create structured [S] workout"
+                                },
+                                "setupValidation": {
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    },
+                                    "version": 1,
+                                    "configuration": "377f18a49c99fc2f"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "POST"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "contentType": {
+                                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                                        },
+                                        "inputMethod": {
+                                            "label": "Data structureDefine the JSON body with a data structure to map or enter values for each key. JSON reserved characters are escaped automatically."
+                                        },
+                                        "shareCookies": {
+                                            "mode": "chose"
+                                        },
+                                        "parseResponse": {
+                                            "mode": "chose"
+                                        },
+                                        "allowRedirects": {
+                                            "mode": "chose"
+                                        },
+                                        "paginationType": {
+                                            "label": "Empty"
+                                        },
+                                        "queryParameters": {
+                                            "mode": "chose"
+                                        },
+                                        "stopOnHttpError": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyDataStructure": {
+                                            "label": "intervals event"
+                                        },
+                                        "requestCompressedContent": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "tlsType": {
+                                            "label": "Empty"
+                                        },
+                                        "basicAuthKeychain": {
+                                            "label": "Hubert's HTTP Basic Auth key"
+                                        },
+                                        "authenticationType": {
+                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "authenticationType",
+                                        "type": "select",
+                                        "label": "Authentication type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "noAuth",
+                                                "apiKeyConnection",
+                                                "basicAuthConnection",
+                                                "oAuth",
+                                                "apiKey",
+                                                "basicAuth"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "tlsType",
+                                        "type": "select",
+                                        "label": "Transport layer security (TLS)",
+                                        "validate": {
+                                            "enum": [
+                                                "mTls",
+                                                "tls"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "proxyKeychain",
+                                        "type": "keychain:proxy",
+                                        "label": "Proxy"
+                                    },
+                                    {
+                                        "name": "basicAuthKeychain",
+                                        "type": "keychain:basicauth",
+                                        "label": "Credentials",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Header"
+                                        },
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "queryParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Query parameters"
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Body content type",
+                                        "validate": {
+                                            "enum": [
+                                                "json",
+                                                "multipart",
+                                                "urlEncoded",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "stopOnHttpError",
+                                        "type": "boolean",
+                                        "label": "Return error if HTTP request fails",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "timeout",
+                                        "type": "uinteger",
+                                        "label": "Timeout",
+                                        "validate": {
+                                            "max": 300,
+                                            "min": 1
+                                        }
+                                    },
+                                    {
+                                        "name": "allowRedirects",
+                                        "type": "boolean",
+                                        "label": "Allow redirects",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "requestCompressedContent",
+                                        "type": "boolean",
+                                        "label": "Request compressed content",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "inputMethod",
+                                        "type": "select",
+                                        "label": "Body input method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "dataStructure",
+                                                "jsonString"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "bodyDataStructure",
+                                        "type": "udt",
+                                        "label": "Body structure",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "dataStructureBodyContent",
+                                        "spec": [
+                                            {
+                                                "name": "category",
+                                                "type": "text",
+                                                "label": "Category"
+                                            },
+                                            {
+                                                "name": "type",
+                                                "type": "text",
+                                                "label": "Type"
+                                            },
+                                            {
+                                                "name": "name",
+                                                "type": "text",
+                                                "label": "Name"
+                                            },
+                                            {
+                                                "name": "start_date_local",
+                                                "type": "text",
+                                                "label": "Start date local"
+                                            },
+                                            {
+                                                "name": "description",
+                                                "type": "text",
+                                                "label": "Description"
+                                            },
+                                            {
+                                                "name": "external_id",
+                                                "type": "text",
+                                                "label": null
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Body content"
+                                    },
+                                    {
+                                        "name": "paginationType",
+                                        "type": "select",
+                                        "label": "Pagination type",
+                                        "validate": {
+                                            "enum": [
+                                                "offsetBased",
+                                                "pageBased",
+                                                "urlBased",
+                                                "tokenBased"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "data",
+                                        "type": "any",
+                                        "label": "Data"
+                                    },
+                                    {
+                                        "name": "statusCode",
+                                        "type": "number",
+                                        "label": "Status Code"
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "content-length",
+                                                "type": "text",
+                                                "label": "Content-Length"
+                                            },
+                                            {
+                                                "name": "content-encoding",
+                                                "type": "text",
+                                                "label": "Content-Encoding"
+                                            },
+                                            {
+                                                "name": "content-type",
+                                                "type": "text",
+                                                "label": "Content-Type"
+                                            },
+                                            {
+                                                "name": "server",
+                                                "type": "text",
+                                                "label": "Server"
+                                            },
+                                            {
+                                                "name": "cache-control",
+                                                "type": "text",
+                                                "label": "Cache-Control"
+                                            },
+                                            {
+                                                "name": "set-cookie",
+                                                "spec": {
+                                                    "type": "text"
+                                                },
+                                                "type": "array",
+                                                "label": "Set-Cookie"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Headers"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 20,
+                            "module": "builtin:BasicFeeder",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "array": "{{1.data}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 605,
+                                    "y": 106,
+                                    "name": "Iterate workouts - today's run"
+                                },
+                                "setupValidation": {
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    },
+                                    "version": 1,
+                                    "configuration": "6750ff578681050f"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "array": {
+                                            "mode": "edit"
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "mode": "edit",
+                                        "name": "array",
+                                        "spec": [],
+                                        "type": "array",
+                                        "label": "Array"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "module": "http:MakeRequest",
+                            "version": 4,
+                            "parameters": {
+                                "tlsType": "",
+                                "basicAuthKeychain": 261451,
+                                "authenticationType": "basicAuth"
+                            },
+                            "filter": {
+                                "name": "run scheduled today",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{20.start_date_local}}",
+                                            "b": "{{formatDate(now; \"YYYY-MM-DD\"; \"Europe/Warsaw\")}}",
+                                            "o": "text:startwith"
+                                        },
+                                        {
+                                            "a": "{{20.type}}",
+                                            "b": "Run",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{20.category}}",
+                                            "b": "WORKOUT",
+                                            "o": "text:equal"
+                                        },
+                                        {
+                                            "a": "{{20.workout_doc.steps}}",
+                                            "b": "0",
+                                            "o": "array:notequal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "url": "https://intervals.icu/api/v1/athlete/0/wellness",
+                                "method": "get",
+                                "timeout": "40",
+                                "shareCookies": false,
+                                "parseResponse": true,
+                                "allowRedirects": true,
+                                "queryParameters": [
+                                    {
+                                        "name": "oldest",
+                                        "value": "{{formatDate(addDays(now; -59); \"YYYY-MM-DD\"; \"Europe/Warsaw\")}}"
+                                    },
+                                    {
+                                        "name": "newest",
+                                        "value": "{{formatDate(now; \"YYYY-MM-DD\"; \"Europe/Warsaw\")}}"
+                                    }
+                                ],
+                                "stopOnHttpError": true,
+                                "requestCompressedContent": true
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 925,
+                                    "y": 106,
+                                    "name": "Read wellness data"
+                                },
+                                "setupValidation": {
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    },
+                                    "version": 1,
+                                    "configuration": "e0560b9e25b4affb"
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "method": {
+                                            "mode": "chose",
+                                            "label": "GET"
+                                        },
+                                        "headers": {
+                                            "mode": "chose"
+                                        },
+                                        "contentType": {
+                                            "label": "Empty"
+                                        },
+                                        "shareCookies": {
+                                            "mode": "chose"
+                                        },
+                                        "parseResponse": {
+                                            "mode": "chose"
+                                        },
+                                        "allowRedirects": {
+                                            "mode": "chose"
+                                        },
+                                        "paginationType": {
+                                            "label": "Empty"
+                                        },
+                                        "queryParameters": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null,
+                                                null
+                                            ]
+                                        },
+                                        "stopOnHttpError": {
+                                            "mode": "chose"
+                                        },
+                                        "requestCompressedContent": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "tlsType": {
+                                            "label": "Empty"
+                                        },
+                                        "basicAuthKeychain": {
+                                            "label": "Hubert's HTTP Basic Auth key"
+                                        },
+                                        "authenticationType": {
+                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "authenticationType",
+                                        "type": "select",
+                                        "label": "Authentication type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "noAuth",
+                                                "apiKeyConnection",
+                                                "basicAuthConnection",
+                                                "oAuth",
+                                                "apiKey",
+                                                "basicAuth"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "tlsType",
+                                        "type": "select",
+                                        "label": "Transport layer security (TLS)",
+                                        "validate": {
+                                            "enum": [
+                                                "mTls",
+                                                "tls"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "proxyKeychain",
+                                        "type": "keychain:proxy",
+                                        "label": "Proxy"
+                                    },
+                                    {
+                                        "name": "basicAuthKeychain",
+                                        "type": "keychain:basicauth",
+                                        "label": "Credentials",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "url",
+                                        "type": "url",
+                                        "label": "URL",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "method",
+                                        "type": "select",
+                                        "label": "Method",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "get",
+                                                "head",
+                                                "post",
+                                                "put",
+                                                "patch",
+                                                "delete",
+                                                "options"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true,
+                                                    "validate": {
+                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Header"
+                                        },
+                                        "type": "array",
+                                        "label": "Headers"
+                                    },
+                                    {
+                                        "name": "queryParameters",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "type": "text",
+                                                    "label": "Name",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Parameter"
+                                        },
+                                        "type": "array",
+                                        "label": "Query parameters"
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Body content type",
+                                        "validate": {
+                                            "enum": [
+                                                "json",
+                                                "multipart",
+                                                "urlEncoded",
+                                                "custom"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "parseResponse",
+                                        "type": "boolean",
+                                        "label": "Parse response",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "stopOnHttpError",
+                                        "type": "boolean",
+                                        "label": "Return error if HTTP request fails",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "timeout",
+                                        "type": "uinteger",
+                                        "label": "Timeout",
+                                        "validate": {
+                                            "max": 300,
+                                            "min": 1
+                                        }
+                                    },
+                                    {
+                                        "name": "allowRedirects",
+                                        "type": "boolean",
+                                        "label": "Allow redirects",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "shareCookies",
+                                        "type": "boolean",
+                                        "label": "Share cookies with other HTTP modules",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "requestCompressedContent",
+                                        "type": "boolean",
+                                        "label": "Request compressed content",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "paginationType",
+                                        "type": "select",
+                                        "label": "Pagination type",
+                                        "validate": {
+                                            "enum": [
+                                                "offsetBased",
+                                                "pageBased",
+                                                "urlBased",
+                                                "tokenBased"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "data",
+                                        "type": "any",
+                                        "label": "Data"
+                                    },
+                                    {
+                                        "name": "statusCode",
+                                        "type": "number",
+                                        "label": "Status Code"
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "spec": [
+                                            {
+                                                "name": "content-length",
+                                                "type": "text",
+                                                "label": "Content-Length"
+                                            },
+                                            {
+                                                "name": "content-encoding",
+                                                "type": "text",
+                                                "label": "Content-Encoding"
+                                            },
+                                            {
+                                                "name": "content-type",
+                                                "type": "text",
+                                                "label": "Content-Type"
+                                            },
+                                            {
+                                                "name": "server",
+                                                "type": "text",
+                                                "label": "Server"
+                                            },
+                                            {
+                                                "name": "cache-control",
+                                                "type": "text",
+                                                "label": "Cache-Control"
+                                            },
+                                            {
+                                                "name": "set-cookie",
+                                                "spec": {
+                                                    "type": "text"
+                                                },
+                                                "type": "array",
+                                                "label": "Set-Cookie"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Headers"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 22,
+                            "module": "util:SetVariables",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "variables": [
+                                    {
+                                        "name": "hrv60",
+                                        "value": "{{average(map(2.data; \"hrv\"))}}"
+                                    },
+                                    {
+                                        "name": "hrv7",
+                                        "value": "{{average(slice(map(2.data; \"hrv\"); length(2.data) - 7))}}"
+                                    },
+                                    {
+                                        "name": "rhr_today",
+                                        "value": "{{last(map(2.data; \"restingHR\"))}}"
+                                    },
+                                    {
+                                        "name": "rhr60",
+                                        "value": "{{average(map(2.data; \"restingHR\"))}}"
+                                    },
+                                    {
+                                        "name": "sleepscore_today",
+                                        "value": "{{last(map(2.data; \"sleepScore\"))}}"
+                                    },
+                                    {
+                                        "name": "sleepscore60",
+                                        "value": "{{average(map(2.data; \"sleepScore\"))}}"
+                                    },
+                                    {
+                                        "name": "sleeptime_today",
+                                        "value": "{{last(map(2.data; \"sleepSecs\"))}}"
+                                    },
+                                    {
+                                        "name": "sleeptime60",
+                                        "value": "{{average(map(2.data; \"sleepSecs\"))}}"
+                                    },
+                                    {
+                                        "name": "TSB",
+                                        "value": "{{get(map(2.data; \"ctl\"); length(2.data) - 1) * (41 / 42) - get(map(2.data; \"atl\"); length(2.data) - 1) * (6 / 7)}}"
+                                    }
+                                ]
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1225,
+                                    "y": 106,
+                                    "name": "Calculate wellness trends"
+                                },
+                                "setupValidation": {
+                                    "version": 1,
+                                    "configuration": "febffb4a179589e5",
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    }
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "variables": {
+                                            "items": [
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                            ]
+                                        }
+                                    }
+                                },
+                                "expect": [
+                                    {
+                                        "name": "variables",
+                                        "type": "array",
+                                        "label": "Variables",
+                                        "validate": {
+                                            "unique": {
+                                                "by": "name"
+                                            },
+                                            "minItems": 1
+                                        },
+                                        "spec": {
+                                            "type": "collection",
+                                            "label": "Variable",
+                                            "spec": [
+                                                {
+                                                    "name": "name",
+                                                    "label": "Variable name",
+                                                    "type": "text",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "label": "Variable value",
+                                                    "type": "any"
+                                                }
+                                            ],
+                                            "name": "value"
+                                        }
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "hrv60",
+                                        "label": "hrv60",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "hrv7",
+                                        "label": "hrv7",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "rhr_today",
+                                        "label": "rhr_today",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "rhr60",
+                                        "label": "rhr60",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "sleepscore_today",
+                                        "label": "sleepscore_today",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "sleepscore60",
+                                        "label": "sleepscore60",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "sleeptime_today",
+                                        "label": "sleeptime_today",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "sleeptime60",
+                                        "label": "sleeptime60",
+                                        "type": "any"
+                                    },
+                                    {
+                                        "name": "TSB",
+                                        "label": "TSB",
+                                        "type": "any"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 28,
+                            "module": "util:SetVariable2",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "name": "Welness flags",
+                                "value": "{{sum(if(ifempty(22.hrv7; 22.hrv60) < 22.hrv60 * 0.93; 1; 0); if(ifempty(22.rhr_today; 22.rhr60) > 22.rhr60 * 1.15; 1; 0); if(ifempty(22.sleepscore_today; 22.sleepscore60) < 22.sleepscore60 * 0.85; 1; 0); if(ifempty(22.sleeptime_today; 22.sleeptime60) < 22.sleeptime60 * 0.85; 1; 0); if(22.TSB < -30; 1; 0))}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1525,
+                                    "y": 106,
+                                    "name": "Flag negative wellness markers"
+                                },
+                                "setupValidation": {
+                                    "version": 1,
+                                    "configuration": "209db26236d2bada",
+                                    "result": {
+                                        "valid": true,
+                                        "fields": []
+                                    }
+                                },
+                                "restore": {},
+                                "expect": [
+                                    {
+                                        "name": "name",
+                                        "type": "text",
+                                        "label": "Variable name",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "any",
+                                        "label": "Variable value"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "Welness flags",
+                                        "label": "Welness flags",
+                                        "type": "any"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 29,
+                            "module": "builtin:BasicIfElse",
+                            "version": 1,
+                            "mapper": null,
+                            "metadata": {
+                                "designer": {
+                                    "x": 1825,
+                                    "y": 106,
+                                    "name": "How many markers are flagged?"
+                                }
+                            },
+                            "branches": [
+                                {
+                                    "merge": false,
+                                    "label": "Swap for rest day",
+                                    "type": "condition",
+                                    "flow": [
+                                        {
+                                            "id": 31,
+                                            "module": "http:MakeRequest",
+                                            "version": 4,
+                                            "parameters": {
+                                                "authenticationType": "basicAuth",
+                                                "tlsType": "",
+                                                "basicAuthKeychain": 261451
+                                            },
+                                            "mapper": {
+                                                "url": "https://intervals.icu/api/v1/athlete/0/events",
+                                                "method": "post",
+                                                "contentType": "json",
+                                                "parseResponse": true,
+                                                "stopOnHttpError": true,
+                                                "timeout": "40",
+                                                "allowRedirects": true,
+                                                "shareCookies": false,
+                                                "requestCompressedContent": true,
+                                                "inputMethod": "dataStructure",
+                                                "bodyDataStructure": 631372,
+                                                "dataStructureBodyContent": {
+                                                    "category": "NOTE",
+                                                    "name": "Rest day flagged [Make]",
+                                                    "start_date_local": "{{20.start_date_local}}",
+                                                    "description": "{{28.`Welness flags`}}/5 recovery flags{{newline}}HRV 7d avg: {{round(22.hrv7)}} (60d: {{round(22.hrv60)}}){{newline}}Resting HR: {{ifempty(22.rhr_today; \"no reading\")}} (60d: {{round(22.rhr60)}}){{newline}}Sleep score: {{ifempty(22.sleepscore_today; \"no reading\")}} (60d: {{round(22.sleepscore60)}}){{newline}}Sleep (h): {{if(22.sleeptime_today > 0; round(22.sleeptime_today / 360) / 10; \"no reading\")}} (60d: {{if(22.sleeptime60 > 0; round(22.sleeptime60 / 360) / 10; \"no data\")}}) {{newline}}TSB this morning: {{round(22.TSB)}}",
+                                                    "external_id": "{{20.external_id}}"
+                                                }
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1968,
+                                                    "y": -138,
+                                                    "name": "Post rest day note"
+                                                },
+                                                "setupValidation": {
+                                                    "version": 1,
+                                                    "configuration": "d14b120c3ade4ba9",
+                                                    "result": {
+                                                        "valid": true,
+                                                        "fields": []
+                                                    }
+                                                },
+                                                "restore": {
+                                                    "parameters": {
+                                                        "authenticationType": {
+                                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                                        },
+                                                        "tlsType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "basicAuthKeychain": {
+                                                            "label": "Hubert's HTTP Basic Auth key"
+                                                        }
+                                                    },
+                                                    "expect": {
+                                                        "method": {
+                                                            "mode": "chose",
+                                                            "label": "POST"
+                                                        },
+                                                        "headers": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "queryParameters": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "contentType": {
+                                                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                                                        },
+                                                        "parseResponse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "stopOnHttpError": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "allowRedirects": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "shareCookies": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "requestCompressedContent": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "inputMethod": {
+                                                            "label": "Data structureDefine the JSON body with a data structure to map or enter values for each key. JSON reserved characters are escaped automatically."
+                                                        },
+                                                        "bodyDataStructure": {
+                                                            "label": "intervals event"
+                                                        },
+                                                        "paginationType": {
+                                                            "label": "Empty"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "authenticationType",
+                                                        "type": "select",
+                                                        "label": "Authentication type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "noAuth",
+                                                                "apiKeyConnection",
+                                                                "basicAuthConnection",
+                                                                "oAuth",
+                                                                "apiKey",
+                                                                "basicAuth"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "tlsType",
+                                                        "type": "select",
+                                                        "label": "Transport layer security (TLS)",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "mTls",
+                                                                "tls"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "proxyKeychain",
+                                                        "type": "keychain:proxy",
+                                                        "label": "Proxy"
+                                                    },
+                                                    {
+                                                        "name": "basicAuthKeychain",
+                                                        "type": "keychain:basicauth",
+                                                        "label": "Credentials",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "url",
+                                                        "type": "url",
+                                                        "label": "URL",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "method",
+                                                        "type": "select",
+                                                        "label": "Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "get",
+                                                                "head",
+                                                                "post",
+                                                                "put",
+                                                                "patch",
+                                                                "delete",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "type": "array",
+                                                        "label": "Headers",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Header",
+                                                            "type": "collection",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "label": "Name",
+                                                                    "type": "text",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "label": "Value",
+                                                                    "type": "text"
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "queryParameters",
+                                                        "type": "array",
+                                                        "label": "Query parameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Parameter",
+                                                            "type": "collection",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "label": "Name",
+                                                                    "type": "text",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "label": "Value",
+                                                                    "type": "text"
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "contentType",
+                                                        "type": "select",
+                                                        "label": "Body content type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "json",
+                                                                "multipart",
+                                                                "urlEncoded",
+                                                                "custom"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "parseResponse",
+                                                        "type": "boolean",
+                                                        "label": "Parse response",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "stopOnHttpError",
+                                                        "type": "boolean",
+                                                        "label": "Return error if HTTP request fails",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "timeout",
+                                                        "type": "uinteger",
+                                                        "label": "Timeout",
+                                                        "validate": {
+                                                            "min": 1,
+                                                            "max": 300
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "allowRedirects",
+                                                        "type": "boolean",
+                                                        "label": "Allow redirects",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "shareCookies",
+                                                        "type": "boolean",
+                                                        "label": "Share cookies with other HTTP modules",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "requestCompressedContent",
+                                                        "type": "boolean",
+                                                        "label": "Request compressed content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "inputMethod",
+                                                        "type": "select",
+                                                        "label": "Body input method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "dataStructure",
+                                                                "jsonString"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "bodyDataStructure",
+                                                        "type": "udt",
+                                                        "label": "Body structure",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "dataStructureBodyContent",
+                                                        "type": "collection",
+                                                        "label": "Body content",
+                                                        "spec": [
+                                                            {
+                                                                "name": "category",
+                                                                "type": "text",
+                                                                "label": "Category"
+                                                            },
+                                                            {
+                                                                "name": "type",
+                                                                "type": "text",
+                                                                "label": "Type"
+                                                            },
+                                                            {
+                                                                "name": "name",
+                                                                "type": "text",
+                                                                "label": "Name"
+                                                            },
+                                                            {
+                                                                "name": "start_date_local",
+                                                                "type": "text",
+                                                                "label": "Start date local"
+                                                            },
+                                                            {
+                                                                "name": "description",
+                                                                "type": "text",
+                                                                "label": "Description"
+                                                            },
+                                                            {
+                                                                "name": "external_id",
+                                                                "type": "text",
+                                                                "label": null
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "name": "paginationType",
+                                                        "type": "select",
+                                                        "label": "Pagination type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "offsetBased",
+                                                                "pageBased",
+                                                                "urlBased",
+                                                                "tokenBased"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "data",
+                                                        "label": "Data",
+                                                        "type": "any"
+                                                    },
+                                                    {
+                                                        "name": "statusCode",
+                                                        "label": "Status Code",
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "label": "Headers",
+                                                        "type": "collection",
+                                                        "spec": [
+                                                            {
+                                                                "name": "content-length",
+                                                                "label": "Content-Length",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "content-encoding",
+                                                                "label": "Content-Encoding",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "content-type",
+                                                                "label": "Content-Type",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "server",
+                                                                "label": "Server",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "cache-control",
+                                                                "label": "Cache-Control",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "set-cookie",
+                                                                "label": "Set-Cookie",
+                                                                "type": "array",
+                                                                "spec": {
+                                                                    "type": "text"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 34,
+                                            "module": "http:MakeRequest",
+                                            "version": 4,
+                                            "parameters": {
+                                                "tlsType": "",
+                                                "basicAuthKeychain": 261451,
+                                                "authenticationType": "basicAuth"
+                                            },
+                                            "filter": {
+                                                "name": "safe to delete",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{20.id}}",
+                                                            "b": "0",
+                                                            "o": "number:greater"
+                                                        },
+                                                        {
+                                                            "a": "{{20.calendar_id}}",
+                                                            "b": "1",
+                                                            "o": "number:equal"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "url": "https://intervals.icu/api/v1/athlete/0/events/{{20.id}}",
+                                                "method": "delete",
+                                                "timeout": "40",
+                                                "shareCookies": false,
+                                                "parseResponse": true,
+                                                "allowRedirects": true,
+                                                "stopOnHttpError": true,
+                                                "requestCompressedContent": true
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2268,
+                                                    "y": -138,
+                                                    "name": "Delete original [S] run - rest day"
+                                                },
+                                                "setupValidation": {
+                                                    "result": {
+                                                        "valid": true,
+                                                        "fields": []
+                                                    },
+                                                    "version": 1,
+                                                    "configuration": "a53536f5b1f440e5"
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "method": {
+                                                            "mode": "chose",
+                                                            "label": "DELETE"
+                                                        },
+                                                        "headers": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "contentType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "shareCookies": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "parseResponse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "allowRedirects": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "paginationType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "queryParameters": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "stopOnHttpError": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "requestCompressedContent": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "tlsType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "basicAuthKeychain": {
+                                                            "label": "Hubert's HTTP Basic Auth key"
+                                                        },
+                                                        "authenticationType": {
+                                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "authenticationType",
+                                                        "type": "select",
+                                                        "label": "Authentication type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "noAuth",
+                                                                "apiKeyConnection",
+                                                                "basicAuthConnection",
+                                                                "oAuth",
+                                                                "apiKey",
+                                                                "basicAuth"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "tlsType",
+                                                        "type": "select",
+                                                        "label": "Transport layer security (TLS)",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "mTls",
+                                                                "tls"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "proxyKeychain",
+                                                        "type": "keychain:proxy",
+                                                        "label": "Proxy"
+                                                    },
+                                                    {
+                                                        "name": "basicAuthKeychain",
+                                                        "type": "keychain:basicauth",
+                                                        "label": "Credentials",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "url",
+                                                        "type": "url",
+                                                        "label": "URL",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "method",
+                                                        "type": "select",
+                                                        "label": "Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "get",
+                                                                "head",
+                                                                "post",
+                                                                "put",
+                                                                "patch",
+                                                                "delete",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Header"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Headers"
+                                                    },
+                                                    {
+                                                        "name": "queryParameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Parameter"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Query parameters"
+                                                    },
+                                                    {
+                                                        "name": "contentType",
+                                                        "type": "select",
+                                                        "label": "Body content type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "json",
+                                                                "multipart",
+                                                                "urlEncoded",
+                                                                "custom"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "parseResponse",
+                                                        "type": "boolean",
+                                                        "label": "Parse response",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "stopOnHttpError",
+                                                        "type": "boolean",
+                                                        "label": "Return error if HTTP request fails",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "timeout",
+                                                        "type": "uinteger",
+                                                        "label": "Timeout",
+                                                        "validate": {
+                                                            "max": 300,
+                                                            "min": 1
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "allowRedirects",
+                                                        "type": "boolean",
+                                                        "label": "Allow redirects",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "shareCookies",
+                                                        "type": "boolean",
+                                                        "label": "Share cookies with other HTTP modules",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "requestCompressedContent",
+                                                        "type": "boolean",
+                                                        "label": "Request compressed content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "paginationType",
+                                                        "type": "select",
+                                                        "label": "Pagination type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "offsetBased",
+                                                                "pageBased",
+                                                                "urlBased",
+                                                                "tokenBased"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "data",
+                                                        "type": "any",
+                                                        "label": "Data"
+                                                    },
+                                                    {
+                                                        "name": "statusCode",
+                                                        "type": "number",
+                                                        "label": "Status Code"
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": [
+                                                            {
+                                                                "name": "content-length",
+                                                                "type": "text",
+                                                                "label": "Content-Length"
+                                                            },
+                                                            {
+                                                                "name": "content-encoding",
+                                                                "type": "text",
+                                                                "label": "Content-Encoding"
+                                                            },
+                                                            {
+                                                                "name": "content-type",
+                                                                "type": "text",
+                                                                "label": "Content-Type"
+                                                            },
+                                                            {
+                                                                "name": "server",
+                                                                "type": "text",
+                                                                "label": "Server"
+                                                            },
+                                                            {
+                                                                "name": "cache-control",
+                                                                "type": "text",
+                                                                "label": "Cache-Control"
+                                                            },
+                                                            {
+                                                                "name": "set-cookie",
+                                                                "spec": {
+                                                                    "type": "text"
+                                                                },
+                                                                "type": "array",
+                                                                "label": "Set-Cookie"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Headers"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                    "conditions": [
+                                        [
+                                            {
+                                                "a": "{{28.`Welness flags`}}",
+                                                "o": "number:greaterorequal",
+                                                "b": "4"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "merge": false,
+                                    "label": "Adjust workout",
+                                    "type": "condition",
+                                    "flow": [
+                                        {
+                                            "id": 32,
+                                            "module": "http:MakeRequest",
+                                            "version": 4,
+                                            "parameters": {
+                                                "authenticationType": "basicAuth",
+                                                "tlsType": "",
+                                                "basicAuthKeychain": 261451
+                                            },
+                                            "mapper": {
+                                                "url": "https://intervals.icu/api/v1/athlete/0/events",
+                                                "method": "post",
+                                                "contentType": "json",
+                                                "parseResponse": true,
+                                                "stopOnHttpError": true,
+                                                "timeout": "40",
+                                                "allowRedirects": true,
+                                                "shareCookies": false,
+                                                "requestCompressedContent": true,
+                                                "inputMethod": "dataStructure",
+                                                "bodyDataStructure": 631372,
+                                                "dataStructureBodyContent": {
+                                                    "category": "WORKOUT",
+                                                    "type": "Run",
+                                                    "name": "[S]Recovery Swap",
+                                                    "start_date_local": "{{20.start_date_local}}",
+                                                    "description": "- {{round(min(20.moving_time; 3600) / 60)}}m 77-83% Pace",
+                                                    "external_id": "{{20.external_id}}"
+                                                }
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2125,
+                                                    "y": 114,
+                                                    "name": "Create easy run"
+                                                },
+                                                "setupValidation": {
+                                                    "version": 1,
+                                                    "configuration": "ba88e317af72ef29",
+                                                    "result": {
+                                                        "valid": true,
+                                                        "fields": []
+                                                    }
+                                                },
+                                                "restore": {
+                                                    "parameters": {
+                                                        "authenticationType": {
+                                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                                        },
+                                                        "tlsType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "basicAuthKeychain": {
+                                                            "label": "Hubert's HTTP Basic Auth key"
+                                                        }
+                                                    },
+                                                    "expect": {
+                                                        "method": {
+                                                            "mode": "chose",
+                                                            "label": "POST"
+                                                        },
+                                                        "headers": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "queryParameters": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "contentType": {
+                                                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                                                        },
+                                                        "parseResponse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "stopOnHttpError": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "allowRedirects": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "shareCookies": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "requestCompressedContent": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "inputMethod": {
+                                                            "label": "Data structureDefine the JSON body with a data structure to map or enter values for each key. JSON reserved characters are escaped automatically."
+                                                        },
+                                                        "bodyDataStructure": {
+                                                            "label": "intervals event"
+                                                        },
+                                                        "paginationType": {
+                                                            "label": "Empty"
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "authenticationType",
+                                                        "type": "select",
+                                                        "label": "Authentication type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "noAuth",
+                                                                "apiKeyConnection",
+                                                                "basicAuthConnection",
+                                                                "oAuth",
+                                                                "apiKey",
+                                                                "basicAuth"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "tlsType",
+                                                        "type": "select",
+                                                        "label": "Transport layer security (TLS)",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "mTls",
+                                                                "tls"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "proxyKeychain",
+                                                        "type": "keychain:proxy",
+                                                        "label": "Proxy"
+                                                    },
+                                                    {
+                                                        "name": "basicAuthKeychain",
+                                                        "type": "keychain:basicauth",
+                                                        "label": "Credentials",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "url",
+                                                        "type": "url",
+                                                        "label": "URL",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "method",
+                                                        "type": "select",
+                                                        "label": "Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "get",
+                                                                "head",
+                                                                "post",
+                                                                "put",
+                                                                "patch",
+                                                                "delete",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "type": "array",
+                                                        "label": "Headers",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Header",
+                                                            "type": "collection",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "label": "Name",
+                                                                    "type": "text",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "label": "Value",
+                                                                    "type": "text"
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "queryParameters",
+                                                        "type": "array",
+                                                        "label": "Query parameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Parameter",
+                                                            "type": "collection",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "label": "Name",
+                                                                    "type": "text",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "label": "Value",
+                                                                    "type": "text"
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "contentType",
+                                                        "type": "select",
+                                                        "label": "Body content type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "json",
+                                                                "multipart",
+                                                                "urlEncoded",
+                                                                "custom"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "parseResponse",
+                                                        "type": "boolean",
+                                                        "label": "Parse response",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "stopOnHttpError",
+                                                        "type": "boolean",
+                                                        "label": "Return error if HTTP request fails",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "timeout",
+                                                        "type": "uinteger",
+                                                        "label": "Timeout",
+                                                        "validate": {
+                                                            "min": 1,
+                                                            "max": 300
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "allowRedirects",
+                                                        "type": "boolean",
+                                                        "label": "Allow redirects",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "shareCookies",
+                                                        "type": "boolean",
+                                                        "label": "Share cookies with other HTTP modules",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "requestCompressedContent",
+                                                        "type": "boolean",
+                                                        "label": "Request compressed content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "inputMethod",
+                                                        "type": "select",
+                                                        "label": "Body input method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "dataStructure",
+                                                                "jsonString"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "bodyDataStructure",
+                                                        "type": "udt",
+                                                        "label": "Body structure",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "dataStructureBodyContent",
+                                                        "type": "collection",
+                                                        "label": "Body content",
+                                                        "spec": [
+                                                            {
+                                                                "name": "category",
+                                                                "type": "text",
+                                                                "label": "Category"
+                                                            },
+                                                            {
+                                                                "name": "type",
+                                                                "type": "text",
+                                                                "label": "Type"
+                                                            },
+                                                            {
+                                                                "name": "name",
+                                                                "type": "text",
+                                                                "label": "Name"
+                                                            },
+                                                            {
+                                                                "name": "start_date_local",
+                                                                "type": "text",
+                                                                "label": "Start date local"
+                                                            },
+                                                            {
+                                                                "name": "description",
+                                                                "type": "text",
+                                                                "label": "Description"
+                                                            },
+                                                            {
+                                                                "name": "external_id",
+                                                                "type": "text",
+                                                                "label": null
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "name": "paginationType",
+                                                        "type": "select",
+                                                        "label": "Pagination type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "offsetBased",
+                                                                "pageBased",
+                                                                "urlBased",
+                                                                "tokenBased"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "data",
+                                                        "label": "Data",
+                                                        "type": "any"
+                                                    },
+                                                    {
+                                                        "name": "statusCode",
+                                                        "label": "Status Code",
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "label": "Headers",
+                                                        "type": "collection",
+                                                        "spec": [
+                                                            {
+                                                                "name": "content-length",
+                                                                "label": "Content-Length",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "content-encoding",
+                                                                "label": "Content-Encoding",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "content-type",
+                                                                "label": "Content-Type",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "server",
+                                                                "label": "Server",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "cache-control",
+                                                                "label": "Cache-Control",
+                                                                "type": "text"
+                                                            },
+                                                            {
+                                                                "name": "set-cookie",
+                                                                "label": "Set-Cookie",
+                                                                "type": "array",
+                                                                "spec": {
+                                                                    "type": "text"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "id": 38,
+                                            "module": "http:MakeRequest",
+                                            "version": 4,
+                                            "parameters": {
+                                                "tlsType": "",
+                                                "basicAuthKeychain": 261451,
+                                                "authenticationType": "basicAuth"
+                                            },
+                                            "filter": {
+                                                "name": "safe to delete",
+                                                "conditions": [
+                                                    [
+                                                        {
+                                                            "a": "{{20.id}}",
+                                                            "b": "0",
+                                                            "o": "number:greater"
+                                                        },
+                                                        {
+                                                            "a": "{{20.calendar_id}}",
+                                                            "b": "1",
+                                                            "o": "number:equal"
+                                                        }
+                                                    ]
+                                                ]
+                                            },
+                                            "mapper": {
+                                                "url": "https://intervals.icu/api/v1/athlete/0/events/{{20.id}}",
+                                                "method": "delete",
+                                                "timeout": "40",
+                                                "shareCookies": false,
+                                                "parseResponse": true,
+                                                "allowRedirects": true,
+                                                "stopOnHttpError": true,
+                                                "requestCompressedContent": true
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2426,
+                                                    "y": 118,
+                                                    "name": "Delete original [S] run - easy run"
+                                                },
+                                                "setupValidation": {
+                                                    "result": {
+                                                        "valid": true,
+                                                        "fields": []
+                                                    },
+                                                    "version": 1,
+                                                    "configuration": "a53536f5b1f440e5"
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "method": {
+                                                            "mode": "chose",
+                                                            "label": "DELETE"
+                                                        },
+                                                        "headers": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "contentType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "shareCookies": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "parseResponse": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "allowRedirects": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "paginationType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "queryParameters": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "stopOnHttpError": {
+                                                            "mode": "chose"
+                                                        },
+                                                        "requestCompressedContent": {
+                                                            "mode": "chose"
+                                                        }
+                                                    },
+                                                    "parameters": {
+                                                        "tlsType": {
+                                                            "label": "Empty"
+                                                        },
+                                                        "basicAuthKeychain": {
+                                                            "label": "Hubert's HTTP Basic Auth key"
+                                                        },
+                                                        "authenticationType": {
+                                                            "label": "Basic auth (Legacy)Use when the service requires a username and password."
+                                                        }
+                                                    }
+                                                },
+                                                "parameters": [
+                                                    {
+                                                        "name": "authenticationType",
+                                                        "type": "select",
+                                                        "label": "Authentication type",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "noAuth",
+                                                                "apiKeyConnection",
+                                                                "basicAuthConnection",
+                                                                "oAuth",
+                                                                "apiKey",
+                                                                "basicAuth"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "tlsType",
+                                                        "type": "select",
+                                                        "label": "Transport layer security (TLS)",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "mTls",
+                                                                "tls"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "proxyKeychain",
+                                                        "type": "keychain:proxy",
+                                                        "label": "Proxy"
+                                                    },
+                                                    {
+                                                        "name": "basicAuthKeychain",
+                                                        "type": "keychain:basicauth",
+                                                        "label": "Credentials",
+                                                        "required": true
+                                                    }
+                                                ],
+                                                "expect": [
+                                                    {
+                                                        "name": "url",
+                                                        "type": "url",
+                                                        "label": "URL",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "method",
+                                                        "type": "select",
+                                                        "label": "Method",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "enum": [
+                                                                "get",
+                                                                "head",
+                                                                "post",
+                                                                "put",
+                                                                "patch",
+                                                                "delete",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true,
+                                                                    "validate": {
+                                                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Header"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Headers"
+                                                    },
+                                                    {
+                                                        "name": "queryParameters",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "name",
+                                                                    "type": "text",
+                                                                    "label": "Name",
+                                                                    "required": true
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "text",
+                                                                    "label": "Value"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Parameter"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Query parameters"
+                                                    },
+                                                    {
+                                                        "name": "contentType",
+                                                        "type": "select",
+                                                        "label": "Body content type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "json",
+                                                                "multipart",
+                                                                "urlEncoded",
+                                                                "custom"
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "parseResponse",
+                                                        "type": "boolean",
+                                                        "label": "Parse response",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "stopOnHttpError",
+                                                        "type": "boolean",
+                                                        "label": "Return error if HTTP request fails",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "timeout",
+                                                        "type": "uinteger",
+                                                        "label": "Timeout",
+                                                        "validate": {
+                                                            "max": 300,
+                                                            "min": 1
+                                                        }
+                                                    },
+                                                    {
+                                                        "name": "allowRedirects",
+                                                        "type": "boolean",
+                                                        "label": "Allow redirects",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "shareCookies",
+                                                        "type": "boolean",
+                                                        "label": "Share cookies with other HTTP modules",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "requestCompressedContent",
+                                                        "type": "boolean",
+                                                        "label": "Request compressed content",
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "paginationType",
+                                                        "type": "select",
+                                                        "label": "Pagination type",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "offsetBased",
+                                                                "pageBased",
+                                                                "urlBased",
+                                                                "tokenBased"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "interface": [
+                                                    {
+                                                        "name": "data",
+                                                        "type": "any",
+                                                        "label": "Data"
+                                                    },
+                                                    {
+                                                        "name": "statusCode",
+                                                        "type": "number",
+                                                        "label": "Status Code"
+                                                    },
+                                                    {
+                                                        "name": "headers",
+                                                        "spec": [
+                                                            {
+                                                                "name": "content-length",
+                                                                "type": "text",
+                                                                "label": "Content-Length"
+                                                            },
+                                                            {
+                                                                "name": "content-encoding",
+                                                                "type": "text",
+                                                                "label": "Content-Encoding"
+                                                            },
+                                                            {
+                                                                "name": "content-type",
+                                                                "type": "text",
+                                                                "label": "Content-Type"
+                                                            },
+                                                            {
+                                                                "name": "server",
+                                                                "type": "text",
+                                                                "label": "Server"
+                                                            },
+                                                            {
+                                                                "name": "cache-control",
+                                                                "type": "text",
+                                                                "label": "Cache-Control"
+                                                            },
+                                                            {
+                                                                "name": "set-cookie",
+                                                                "spec": {
+                                                                    "type": "text"
+                                                                },
+                                                                "type": "array",
+                                                                "label": "Set-Cookie"
+                                                            }
+                                                        ],
+                                                        "type": "collection",
+                                                        "label": "Headers"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                    "conditions": [
+                                        [
+                                            {
+                                                "a": "{{28.`Welness flags`}}",
+                                                "o": "number:greaterorequal",
+                                                "b": "3"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "merge": false,
+                                    "disabled": false,
+                                    "label": "",
+                                    "type": "else",
+                                    "flow": [
+                                        {
+                                            "id": 30,
+                                            "module": "placeholder:Placeholder",
+                                            "filter": null,
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 2004,
+                                                    "y": 341
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": true,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}
